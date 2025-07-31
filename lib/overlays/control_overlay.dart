@@ -7,42 +7,41 @@ class ControlOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned(
-          left: 20,
-          bottom: 20,
-          child: Row(
-            children: [
-              GestureDetector(
-                onTapDown: (_) => game.player.moveLeft(),
-                onTapUp: (_) => game.player.stopMoving(),
-                child: Container(
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: Colors.white30,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Icon(Icons.arrow_back, size: 40),
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 40),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center, // Centraliza horizontalmente
+          children: [
+            GestureDetector(
+              onTapDown: (_) => game.player.moveLeft(),
+              onTapUp: (_) => game.player.stopMoving(),
+              child: Container(
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white30,
+                  borderRadius: BorderRadius.circular(50),
                 ),
+                child: const Icon(Icons.arrow_back, size: 40),
               ),
-              SizedBox(width: 20),
-              GestureDetector(
-                onTapDown: (_) => game.player.moveRight(),
-                onTapUp: (_) => game.player.stopMoving(),
-                child: Container(
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: Colors.white30,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Icon(Icons.arrow_forward, size: 40),
+            ),
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTapDown: (_) => game.player.moveRight(),
+              onTapUp: (_) => game.player.stopMoving(),
+              child: Container(
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white30,
+                  borderRadius: BorderRadius.circular(50),
                 ),
+                child: const Icon(Icons.arrow_forward, size: 40),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

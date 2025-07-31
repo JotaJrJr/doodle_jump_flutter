@@ -50,7 +50,12 @@ class Player extends PositionComponent
     if (position.x > game.size.x) position.x = 0;
 
     // Cabo
-    if (position.y > game.camera.viewport.position.y + game.size.y) {
+    // if (position.y > game.camera.viewport.position.y + game.size.y) {
+    //   game.gameOver();
+    // }
+
+    double screenBottom = game.camera.viewport.position.y + game.size.y;
+    if (position.y > screenBottom) {
       game.gameOver();
     }
   }
@@ -86,7 +91,7 @@ class Player extends PositionComponent
       } else {
         velocity.y = jumpSpeed * 1.5;
       }
-      game.platformsPassed++;
+      game.platformsPassed = game.platformsPassed + 1;
     }
   }
 }

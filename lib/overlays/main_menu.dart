@@ -11,7 +11,7 @@ class MainMenu extends StatelessWidget {
       child: ElevatedButton(
         child: Text('Iniciar Jogo'),
         onPressed: () {
-          game.overlays.remove('MainMenu');
+          game.overlays.removeAll(['MainMenu', 'GameOver', 'PauseMenu']);
 
           if (MediaQuery.of(context).size.shortestSide < 600) {
             game.overlays.add('Controls');

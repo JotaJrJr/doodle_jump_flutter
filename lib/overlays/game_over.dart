@@ -7,24 +7,27 @@ class GameOverMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('Game Over', style: TextStyle(fontSize: 32, color: Colors.white)),
-        ElevatedButton(
-          child: Text('Reiniciar'),
-          onPressed: () {
-            game.reset();
-            game.resumeEngine();
-          },
-        ),
-        ElevatedButton(
-          child: Text('Voltar ao Menu'),
-          onPressed: () {
-            game.reset();
-          },
-        ),
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        // crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text('Game Over', style: TextStyle(fontSize: 32, color: Colors.white)),
+          ElevatedButton(
+            child: Text('Reiniciar'),
+            onPressed: () {
+              game.reset();
+              game.resumeEngine();
+            },
+          ),
+          ElevatedButton(
+            child: Text('Voltar ao Menu'),
+            onPressed: () {
+              game.reset();
+            },
+          ),
+        ],
+      ),
     );
   }
 }

@@ -7,16 +7,26 @@ class ScoreOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 10,
-      left: 10,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Plataformas: ${game.platformsPassed}', style: TextStyle(color: Colors.white)),
-          Text('Altura: ${(-game.maxHeight).toInt()}', style: TextStyle(color: Colors.white)),
-        ],
+    final Size size = MediaQuery.of(context).size;
+    return ListenableBuilder(
+      listenable: Listenable.merge(
+        [
+          game.platformsPassedNotifier, game.maxHeightNotifier
+        ]
       ),
+      builder: (context, widget) {
+        return Positioned(
+          top: size.height * 0.5,
+          right: 10,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Plataformas: ${game.platformsPassed}', style: TextStyle(color: Colors.white)),
+              Text('Altura: ${(-game.maxHeight).toInt()}', style: TextStyle(color: Colors.white)),
+            ],
+          ),
+        );
+      }
     );
   }
 }

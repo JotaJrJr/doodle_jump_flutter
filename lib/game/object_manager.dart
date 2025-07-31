@@ -25,7 +25,10 @@ class ObjectManager extends Component with HasGameReference<DoodleJumper> {
   void update(double dt) {
     super.update(dt);
     
+    
     final cameraY = game.camera.viewport.position.y;
+    // final cameraY = game.camera.viewfinder.position.y;  // não sei se é viewport ou viewfinder
+
     
     
     if (cameraY + game.size.y < highestY + spacing * 5) {
