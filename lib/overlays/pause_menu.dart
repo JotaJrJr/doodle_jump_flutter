@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class PauseMenu extends StatelessWidget {
   final DoodleJumper game;
-  const PauseMenu(this.game, {Key? key}) : super(key: key);
+  const PauseMenu(this.game, {super.key});
 
   @override
   Widget build(BuildContext context) {

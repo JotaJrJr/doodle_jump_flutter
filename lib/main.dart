@@ -1,48 +1,25 @@
+import 'package:doodle_jump/game/doodle_jumper.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+
+import 'overlays/control_overlay.dart';
+import 'overlays/game_over.dart';
+import 'overlays/main_menu.dart';
+import 'overlays/pause_menu.dart';
+import 'overlays/score_overlay.dart';
 
 void main() {
   runApp(
     GameWidget(
-      game: ,
+      game: DoodleJumper(),
       overlayBuilderMap: {
-        'MainMenu': (ctx, MyGame game) => MainMenu(game),
-        'PauseMenu': (ctx, MyGame game) => PauseMenu(game),
-        'GameOver': (ctx, MyGame game) => GameOverMenu(game),
-        'Score': (ctx, MyGame game) => ScoreOverlay(game),
+        'MainMenu': (ctx, DoodleJumper game) => MainMenu(game),
+        'PauseMenu': (ctx, DoodleJumper game) => PauseMenu(game),
+        'GameOver': (ctx, DoodleJumper game) => GameOverMenu(game),
+        'Score': (ctx, DoodleJumper game) => ScoreOverlay(game),
+        'Controls': (ctx, DoodleJumper game) => ControlOverlay(game),
       },
       initialActiveOverlays: ['MainMenu'],
     )
   );
 }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Flutter Demo',
-//       theme: ThemeData(
-//         // This is the theme of your application.
-//         //
-//         // TRY THIS: Try running your application with "flutter run". You'll see
-//         // the application has a purple toolbar. Then, without quitting the app,
-//         // try changing the seedColor in the colorScheme below to Colors.green
-//         // and then invoke "hot reload" (save your changes or press the "hot
-//         // reload" button in a Flutter-supported IDE, or press "r" if you used
-//         // the command line to start the app).
-//         //
-//         // Notice that the counter didn't reset back to zero; the application
-//         // state is not lost during the reload. To reset the state, use hot
-//         // restart instead.
-//         //
-//         // This works for code too, not just values: Most code changes can be
-//         // tested with just a hot reload.
-//         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-//       ),
-//       home: const MyHomePage(title: 'Flutter Demo Home Page'),
-//     );
-//   }
-// }

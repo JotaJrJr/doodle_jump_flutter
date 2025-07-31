@@ -12,6 +12,12 @@ class MainMenu extends StatelessWidget {
         child: Text('Iniciar Jogo'),
         onPressed: () {
           game.overlays.remove('MainMenu');
+
+          if (MediaQuery.of(context).size.shortestSide < 600) {
+            game.overlays.add('Controls');
+          }
+
+          game.overlays.add('Score');
           game.resumeEngine();
         },
       ),

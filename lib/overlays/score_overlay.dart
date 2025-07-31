@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ScoreOverlay extends StatelessWidget {
   final DoodleJumper game;
-  const ScoreOverlay(this.game, {Key? key}) : super(key: key);
+  const ScoreOverlay(this.game, {super.key});
 
   @override
   Widget build(BuildContext context) {

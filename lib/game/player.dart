@@ -1,41 +1,74 @@
-import 'dart:io';
 
-import 'package:flame/collisions.dart';
+import 'package:doodle_jump/game/doodle_jumper.dart';
 import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
+import 'package:flame/collisions.dart';
 import 'package:flutter/material.dart';
+import 'package:sensors_plus/sensors_plus.dart';
+import 'platform.dart';
 
-import 'doodle_jumper.dart';
-
-class Player extends PositionComponent with HasGameReference<DoodleJumper>, CollisionCallbacks {
-
-  Vector2 velocity = Vector2(0, 0);
-
+class Player extends PositionComponent
+    with HasGameReference<DoodleJumper>, CollisionCallbacks {
+  Vector2 velocity = Vector2.zero();
   final double jumpSpeed = -450;
   final double moveSpeed = 200;
 
-  Player({
-    required this.velocity, required Vector2 position
-  }) : super(position: position, size: Vector2(50, 50)) {
-    anchor = Anchor.center;
-    addShape(CircleHitbox());
+  Player({required Vector2 position})
+    : super(position: position, size: Vector2(50, 50), anchor: Anchor.center);
+
+  @override
+  Future<void> onLoad() async {
+    add(CircleHitbox());
+    
+    // acelerômetro
+    if (game.buildContext != null &&
+        MediaQuery.of(game.buildContext!).size.shortestSide < 600) {
+      // accelerometerEvents.listen((AccelerometerEvent event) {
+      //   horizontalDirection = event.x * 2;
+      // });
+
+      accelerometerEventStream().listen((AccelerometerEvent event) {
+        horizontalDirection = event.x * 2;
+      });
+    }
   }
 
+  double horizontalDirection = 0;
+  bool isMovingLeft = false;
+  bool isMovingRight = false;
 
   @override
   void update(double dt) {
-    super.update(dt);
-    velocity.y += gameRef.gravity * dt;
+    // Aplica movimento
+    velocity.x = horizontalDirection * moveSpeed;
+    
+    // Física do jogador
+    velocity.y += game.gravity * dt;
     position += velocity * dt;
 
-    // Loop horizontal
-    if (position.x < 0) position.x = gameRef.size.x;
-    if (position.x > gameRef.size.x) position.x = 0;
+    // Loop horizontal pra ir da direita e brotar na esquerda vice versa
+    if (position.x < 0) position.x = game.size.x;
+    if (position.x > game.size.x) position.x = 0;
 
-    // Game Over
-    if (position.y > gameRef.camera.position.y + gameRef.size.y) {
-      gameRef.gameOver();
+    // Cabo
+    if (position.y > game.camera.viewport.position.y + game.size.y) {
+      game.gameOver();
     }
+  }
+
+  void moveLeft() {
+    horizontalDirection = -1;
+    isMovingLeft = true;
+  }
+
+  void moveRight() {
+    horizontalDirection = 1;
+    isMovingRight = true;
+  }
+
+  void stopMoving() {
+    horizontalDirection = 0;
+    isMovingLeft = false;
+    isMovingRight = false;
   }
 
   @override
@@ -44,12 +77,16 @@ class Player extends PositionComponent with HasGameReference<DoodleJumper>, Coll
   }
 
   @override
-  void onCollision(Set<Vector2> points, PositionComponent other) {
-    super.onCollision(points, other);
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    super.onCollision(intersectionPoints, other);
+    
     if (other is Platform && velocity.y > 0) {
-      velocity.y = jumpSpeed;
-      gameRef.platformsPassed++;
+      if(!other.isSpecial) {
+        velocity.y = jumpSpeed;
+      } else {
+        velocity.y = jumpSpeed * 1.5;
+      }
+      game.platformsPassed++;
     }
   }
-  
 }
