@@ -12,9 +12,12 @@ class DoodleJumper extends FlameGame
   late ObjectManager objectManager;
 
   double gravity = 800;
+  double initialPlayerY = 0;
+
+  // TODO : Rever isso, tá calculando só a subida, caso desça ele não muda o valor
+  // Ele conta cada vez que encosta numa plataforma, não necessariamente quando passa por elas, então ele incrementa também quando cai na mesma plataforma
   ValueNotifier<int> platformsPassedNotifier = ValueNotifier(0);
   ValueNotifier<double> maxHeightNotifier = ValueNotifier(0);
-  double initialPlayerY = 0;
 
   int _platformsPassed = 0;
   int get platformsPassed => _platformsPassed;
@@ -35,7 +38,6 @@ class DoodleJumper extends FlameGame
     camera.viewport = FixedResolutionViewport(resolution: Vector2(360, 640));
     initialPlayerY = size.y - 100; // guard a aposição inicial do player
 
-
     player = Player(position: Vector2(size.x / 2, size.y - 100));
     add(player);
 
@@ -54,43 +56,35 @@ class DoodleJumper extends FlameGame
     //   maxHeight = currentHeight;
     // }
 
-
     // double targetCameraY = player.position.y - size.y * 0.7; // mantém no 1/3 de baixo
 
     // double targetCameraY = player.position.y - 128;
-
 
     // if (targetCameraY < camera.viewfinder.position.y) {
     //   camera.moveTo(Vector2(0, targetCameraY));
     // }
 
-  //   if (player.position.y < maxHeight) {
-  //   maxHeight = player.position.y;
-  //   camera.moveTo(Vector2(0, maxHeight - size.y / 2));
-  // }
+    //   if (player.position.y < maxHeight) {
+    //   maxHeight = player.position.y;
+    //   camera.moveTo(Vector2(0, maxHeight - size.y / 2));
+    // }
 
+    double currentHeight = initialPlayerY - player.position.y;
 
+    if (currentHeight > maxHeightNotifier.value) {
+      // maxHeightNotifier.value = currentHeight;
+      maxHeight = currentHeight;
+    }
 
-  double currentHeight = initialPlayerY - player.position.y;
+    double halfHeight = size.y / 2;
+    double f = 0.7;
+    double offset = f * size.y - halfHeight;
 
-  if (currentHeight > maxHeightNotifier.value) {
-    // maxHeightNotifier.value = currentHeight;
-    maxHeight = currentHeight;
-  }
+    double targetCameraY = player.position.y - offset;
 
-  double halfHeight = size.y / 2;
-  double f = 0.7;
-  double offset = f * size.y - halfHeight;
-
-  double targetCameraY = player.position.y - offset;
-  
-  if (targetCameraY < camera.viewfinder.position.y) {
-    camera.moveTo(Vector2(0, targetCameraY));
-  }
-
-
-
-
+    if (targetCameraY < camera.viewfinder.position.y) {
+      camera.moveTo(Vector2(0, targetCameraY));
+    }
   }
 
   void reset() {
@@ -98,7 +92,7 @@ class DoodleJumper extends FlameGame
     // maxHeightNotifier.value = 0;
 
     platformsPassed = 0;
-  maxHeight = 0;
+    maxHeight = 0;
 
     // Remove todos os componentes
     children.where((c) => c is! CameraComponent).forEach(remove);
@@ -116,8 +110,6 @@ class DoodleJumper extends FlameGame
     overlays.removeAll(['GameOver', 'PauseMenu', 'Controls', 'Score']);
     overlays.add('MainMenu');
 
-    
-    
     resumeEngine();
   }
 

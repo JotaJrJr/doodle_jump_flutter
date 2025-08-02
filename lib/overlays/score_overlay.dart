@@ -14,7 +14,7 @@ class ScoreOverlay extends StatelessWidget {
           game.platformsPassedNotifier, game.maxHeightNotifier
         ]
       ),
-      builder: (context, widget) {
+      builder: (_, __) {
         return Positioned(
           top: size.height * 0.5,
           right: 10,
