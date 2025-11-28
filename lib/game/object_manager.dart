@@ -10,7 +10,7 @@ class ObjectManager extends Component with HasGameReference<DoodleJumper> {
 
   @override
   Future<void> onLoad() async {
-    // Gera plataformas iniciais
+    
     double y = game.size.y;
     while (y > -spacing * 10) {
       final x = random.nextDouble() * (game.size.x - 60);
@@ -41,7 +41,7 @@ class ObjectManager extends Component with HasGameReference<DoodleJumper> {
       highestY -= spacing;
     }
 
-    // Remove plataformas abaixo da visão
+    
     final toRemove = game.children
         .whereType<Platform>()
         .where((p) => p.position.y > cameraY + game.size.y)

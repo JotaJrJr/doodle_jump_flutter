@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:doodle_jump/game/player.dart';
 import 'package:flame/camera.dart';
 import 'package:flame/game.dart';
@@ -18,6 +20,7 @@ class DoodleJumper extends FlameGame
   // Ele conta cada vez que encosta numa plataforma, não necessariamente quando passa por elas, então ele incrementa também quando cai na mesma plataforma
   ValueNotifier<int> platformsPassedNotifier = ValueNotifier(0);
   ValueNotifier<double> maxHeightNotifier = ValueNotifier(0);
+  final StreamController<Rect> cameraStreamController = StreamController<Rect>.broadcast();
 
   int _platformsPassed = 0;
   int get platformsPassed => _platformsPassed;
@@ -35,11 +38,12 @@ class DoodleJumper extends FlameGame
 
   @override
   Future<void> onLoad() async {
+    debugMode = true;
+    player = Player(position: Vector2(size.x / 2, size.y - 100), cameraStreamController: cameraStreamController,);
+    add(player);
     camera.viewport = FixedResolutionViewport(resolution: Vector2(360, 640));
     initialPlayerY = size.y - 100; // guard a aposição inicial do player
 
-    player = Player(position: Vector2(size.x / 2, size.y - 100));
-    add(player);
 
     objectManager = ObjectManager();
     add(objectManager);
@@ -94,17 +98,17 @@ class DoodleJumper extends FlameGame
     platformsPassed = 0;
     maxHeight = 0;
 
-    // Remove todos os componentes
+    // remove todos os componentes... supostamente
     children.where((c) => c is! CameraComponent).forEach(remove);
 
-    // Recria os componentes principais
-    player = Player(position: Vector2(size.x / 2, size.y - 100));
+    // recria os componentes principais
+    player = Player(position: Vector2(size.x / 2, size.y - 100), cameraStreamController: cameraStreamController);
     add(player);
 
     objectManager = ObjectManager();
     add(objectManager);
 
-    // Reseta a câmera
+    // reseta a câmera pra posição inicial
     camera.moveTo(Vector2(0, 0));
 
     overlays.removeAll(['GameOver', 'PauseMenu', 'Controls', 'Score']);
@@ -127,4 +131,14 @@ class DoodleJumper extends FlameGame
     pauseEngine();
     overlays.add('GameOver');
   }
+
+//   void resetGame() {
+//   // Remove todos os componentes menos o jogador
+//   children.where((c) => c is! Player).forEach(remove);
+
+//   // Reposiciona o jogador e zera a velocidade
+//   final player = children.whereType<Player>().first;
+//   player.position = size / 2;
+//   player.velocity = Vector2.zero();
+// }
 }

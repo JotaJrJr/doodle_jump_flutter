@@ -1,3 +1,4 @@
+import 'dart:async';
 
 import 'package:doodle_jump/game/doodle_jumper.dart';
 import 'package:flame/components.dart';
@@ -12,86 +13,73 @@ class Player extends PositionComponent
   final double jumpSpeed = -450;
   final double moveSpeed = 200;
 
-  Player({required Vector2 position})
-    : super(position: position, size: Vector2(50, 50), anchor: Anchor.center);
+  final StreamController<Rect> cameraStreamController;
+  double horizontalDirection = 0.0;
+
+  Player({
+    required Vector2 position,
+    required this.cameraStreamController,
+  }) : super(position: position, size: Vector2(90, 90), anchor: Anchor.center);
 
   @override
   Future<void> onLoad() async {
-    add(CircleHitbox());
-    
-    // acelerômetro
+    debugMode = true;
+    add(CircleHitbox(
+      
+    ));
+
     if (game.buildContext != null &&
         MediaQuery.of(game.buildContext!).size.shortestSide < 600) {
-      // accelerometerEvents.listen((AccelerometerEvent event) {
-      //   horizontalDirection = event.x * 2;
-      // });
-
       accelerometerEventStream().listen((AccelerometerEvent event) {
         horizontalDirection = event.x * 2;
       });
     }
   }
 
-  double horizontalDirection = 0;
-  bool isMovingLeft = false;
-  bool isMovingRight = false;
-
   @override
   void update(double dt) {
-    // Aplica movimento
-    velocity.x = horizontalDirection * moveSpeed;
-    
-    // Física do jogador
-    velocity.y += game.gravity * dt;
+    super.update(dt);
+
+    velocity.y += 800 * dt;
     position += velocity * dt;
 
-    // Loop horizontal pra ir da direita e brotar na esquerda vice versa
-    if (position.x < 0) position.x = game.size.x;
-    if (position.x > game.size.x) position.x = 0;
+    position.x += horizontalDirection * moveSpeed * dt;
 
-    // Cabo
-    // if (position.y > game.camera.viewport.position.y + game.size.y) {
-    //   game.gameOver();
-    // }
+    if (position.x < -width / 2) {
+      position.x = game.size.x + width / 2;
+    } else if (position.x > game.size.x + width / 2) {
+      position.x = -width / 2;
+    }
 
-    double screenBottom = game.camera.viewport.position.y + game.size.y;
-    if (position.y > screenBottom) {
-      game.gameOver();
+    if (position.y < game.size.y / 2) {
+      final diff = game.size.y / 2 - position.y;
+      position.y = game.size.y / 2;
+      game.children.whereType<Platform>().forEach((platform) {
+        platform.position.y += diff;
+      });
+
+      cameraStreamController.add(Rect.fromLTWH(0, -position.y, game.size.x, game.size.y));
+    }
+
+    if (position.y > game.size.y) {
+      // game.resetGame();
     }
   }
 
-  void moveLeft() {
+    void moveLeft() {
     horizontalDirection = -1;
-    isMovingLeft = true;
+    // isMovingLeft = true;
   }
 
   void moveRight() {
     horizontalDirection = 1;
-    isMovingRight = true;
   }
-
   void stopMoving() {
     horizontalDirection = 0;
-    isMovingLeft = false;
-    isMovingRight = false;
   }
 
   @override
   void render(Canvas canvas) {
     canvas.drawRect(size.toRect(), Paint()..color = Colors.green);
-  }
-
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    super.onCollision(intersectionPoints, other);
-    
-    if (other is Platform && velocity.y > 0) {
-      if(!other.isSpecial) {
-        velocity.y = jumpSpeed;
-      } else {
-        velocity.y = jumpSpeed * 1.5;
-      }
-      game.platformsPassed = game.platformsPassed + 1;
-    }
   }
 }

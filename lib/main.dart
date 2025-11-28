@@ -1,25 +1,41 @@
-import 'package:doodle_jump/game/doodle_jumper.dart';
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-
-import 'overlays/control_overlay.dart';
-import 'overlays/game_over.dart';
-import 'overlays/main_menu.dart';
-import 'overlays/pause_menu.dart';
-import 'overlays/score_overlay.dart';
+import 'package:flutter/services.dart';
+import 'screens/home_screen.dart';
+import 'screens/game_screen.dart';
+import 'screens/leaderboard_screen.dart';
 
 void main() {
-  runApp(
-    GameWidget(
-      game: DoodleJumper(),
-      overlayBuilderMap: {
-        'MainMenu': (ctx, DoodleJumper game) => MainMenu(game),
-        'PauseMenu': (ctx, DoodleJumper game) => PauseMenu(game),
-        'GameOver': (ctx, DoodleJumper game) => GameOverMenu(game),
-        'Score': (ctx, DoodleJumper game) => ScoreOverlay(game),
-        'Controls': (ctx, DoodleJumper game) => ControlOverlay(game),
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Set preferred orientations (allow all for responsive design)
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
+  
+  runApp(const FlutterJumpApp());
+}
+
+class FlutterJumpApp extends StatelessWidget {
+  const FlutterJumpApp({super.key});
+  
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Jump',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(),
+        '/game': (context) => const GameScreen(),
+        '/leaderboard': (context) => const LeaderboardScreen(),
       },
-      initialActiveOverlays: ['MainMenu'],
-    )
-  );
+    );
+  }
 }
