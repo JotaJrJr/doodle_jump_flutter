@@ -4,14 +4,13 @@ import 'platform_base.dart';
 
 /// Standard platform providing normal jump boost
 class NormalPlatform extends PlatformBase {
-  NormalPlatform({
-    required Vector2 position,
-  }) : super(
-         position: position,
-         size: Vector2(70, 15),
-         jumpBoost: 600, // Standard jump strength
-       );
-  
+  NormalPlatform({required Vector2 position})
+    : super(
+        position: position,
+        size: Vector2(70, 15),
+        jumpBoost: 800, // Increased jump strength for better reach
+      );
+
   @override
   Color getPlatformColor() => const Color(0xFF4CAF50); // Green
 }
